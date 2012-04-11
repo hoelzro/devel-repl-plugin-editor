@@ -66,4 +66,14 @@ and the code you type in that file is executed after you exit the editor.
 
 L<Devel::REPL>
 
+=begin comment
+
+=over
+
+=item BEFORE_PLUGIN
+
+=back
+
+=end comment
+
 =cut
