@@ -1,5 +1,7 @@
+## no critic (RequireUseStrict)
 package Devel::REPL::Plugin::Editor;
 
+## use critic (RequireUseStrict)
 use Devel::REPL::Plugin;
 use File::Slurp qw(read_file);
 use File::Temp ();
