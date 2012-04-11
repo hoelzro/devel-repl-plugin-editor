@@ -43,3 +43,25 @@ sub BEFORE_PLUGIN {
 }
 
 1;
+
+__END__
+
+# ABSTRACT: Add #edit command to drop into an editor for longer expressions
+
+=head1 SYNOPSIS
+
+  # in ~/.re.pl/repl.rc
+  $_REPL->load_plugin('Editor');
+
+=head1 DESCRIPTION
+
+This plugin adds an C<edit> command to your REPL, invoked using C<#edit> (or
+using whatever L<Devel::REPL::Plugin::Turtles/default_command_prefix> is).
+When you run the the edit command, the REPL drops you into C<$ENV{'EDITOR'}>,
+and the code you type in that file is executed after you exit the editor.
+
+=head1 SEE ALSO
+
+L<Devel::REPL>
+
+=cut
