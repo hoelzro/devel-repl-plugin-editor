@@ -5,25 +5,34 @@ package Devel::REPL::Plugin::Editor;
 use Devel::REPL::Plugin;
 use File::Slurp qw(read_file);
 use File::Temp ();
+use IO::File;
 
 use namespace::clean -except => 'meta';
 
 my $repl;
-my $tempfile;
 
 sub BEFORE_PLUGIN {
     ( $repl ) = @_;
 
     $repl->load_plugin('Turtles');
     $repl->meta->add_method(command_edit => sub {
-        my ( $self ) = @_;
+        my ( $self, $dummysub, $filename ) = @_;
 
-        my $tempfile = File::Temp->new(SUFFIX => '.pl');
-        close $tempfile;
+		# If filename was not provided, make one up
+		if ((! defined($filename)) || ($filename eq '')) {
+			my $tempfile = File::Temp->new(SUFFIX => '.pl');
+			close $tempfile;
+			$filename = $tempfile->filename();
+		} else {
+			my $fh = IO::File->new();
+			$fh->open($filename, 'a+')
+				or print STDERR "can't access $filename\n" && return;
+			$fh->close();
+		}
 
-        system $ENV{'EDITOR'}, $tempfile->filename;
+        system $ENV{'EDITOR'}, $filename;
 
-        my $code = read_file($tempfile->filename);
+        my $code = read_file($filename);
         chomp $code;
         my $pristine_code = $code;
 
