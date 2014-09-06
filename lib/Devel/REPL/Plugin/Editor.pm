@@ -5,7 +5,6 @@ package Devel::REPL::Plugin::Editor;
 use Devel::REPL::Plugin;
 use File::Slurp qw(read_file);
 use File::Temp ();
-use IO::File;
 
 use namespace::clean -except => 'meta';
 
@@ -25,13 +24,6 @@ sub BEFORE_PLUGIN {
             $tempfile = File::Temp->new(SUFFIX => '.pl');
             close $tempfile;
             $filename = $tempfile->filename;
-        } else {
-            my $fh = IO::File->new;
-            unless($fh->open($filename, 'a+')) {
-                print STDERR "can't access $filename\n";
-                return;
-            }
-            $fh->close;
         }
 
         system $ENV{'EDITOR'}, $filename;
