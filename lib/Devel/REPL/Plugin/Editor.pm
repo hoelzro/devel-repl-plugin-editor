@@ -15,7 +15,7 @@ sub BEFORE_PLUGIN {
 
     $repl->load_plugin('Turtles');
     $repl->meta->add_method(command_edit => sub {
-        my ( $self, $dummysub, $filename ) = @_;
+        my ( $self, undef, $filename ) = @_;
 
         my $tempfile;
 
