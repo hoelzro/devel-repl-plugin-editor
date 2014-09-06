@@ -18,17 +18,19 @@ sub BEFORE_PLUGIN {
     $repl->meta->add_method(command_edit => sub {
         my ( $self, $dummysub, $filename ) = @_;
 
-		# If filename was not provided, make one up
-		if ((! defined($filename)) || ($filename eq '')) {
-			my $tempfile = File::Temp->new(SUFFIX => '.pl');
-			close $tempfile;
-			$filename = $tempfile->filename();
-		} else {
-			my $fh = IO::File->new();
-			$fh->open($filename, 'a+')
-				or print STDERR "can't access $filename\n" && return;
-			$fh->close();
-		}
+        # If filename was not provided, make one up
+        if(!defined($filename) || $filename eq '') {
+            my $tempfile = File::Temp->new(SUFFIX => '.pl');
+            close $tempfile;
+            $filename = $tempfile->filename;
+        } else {
+            my $fh = IO::File->new;
+            unless($fh->open($filename, 'a+')) {
+                print STDERR "can't access $filename\n";
+                return;
+            }
+            $fh->close;
+        }
 
         system $ENV{'EDITOR'}, $filename;
 
