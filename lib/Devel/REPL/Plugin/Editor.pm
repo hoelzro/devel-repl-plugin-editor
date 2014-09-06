@@ -18,9 +18,11 @@ sub BEFORE_PLUGIN {
     $repl->meta->add_method(command_edit => sub {
         my ( $self, $dummysub, $filename ) = @_;
 
+        my $tempfile;
+
         # If filename was not provided, make one up
         if(!defined($filename) || $filename eq '') {
-            my $tempfile = File::Temp->new(SUFFIX => '.pl');
+            $tempfile = File::Temp->new(SUFFIX => '.pl');
             close $tempfile;
             $filename = $tempfile->filename;
         } else {
