@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.02 September 08 2014
      - Allow editing of custom file names (thanks Vytas Dauksa for the code!)
      - Prevent using #edit within the editor (GH #1, thanks Vytas Dauksa for the report!)
      - Allow re-opening previously edited file (GH #2, thanks Vytas Dauksa for the report!)
