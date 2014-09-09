@@ -13,17 +13,24 @@ has evaluating_file_contents => (
     default => 0,
 );
 
+has previously_edited_file => (
+    is => 'rw',
+);
+
 sub command_edit {
     my ( $self, undef, $filename ) = @_;
 
-    my $tempfile;
-
     # If filename was not provided, make one up
     if(!defined($filename) || $filename eq '') {
-        $tempfile = File::Temp->new(SUFFIX => '.pl');
+        my $tempfile = File::Temp->new(SUFFIX => '.pl');
         close $tempfile;
         $filename = $tempfile->filename;
+        $self->previously_edited_file($tempfile);
+    } else {
+        $self->previously_edited_file($filename);
     }
+    $filename = "$filename"; # we could've gotten a File::Temp from
+                             # command_redit
 
     system $ENV{'EDITOR'}, $filename;
 
@@ -48,6 +55,18 @@ sub command_edit {
     my @result = $self->formatted_eval($code);
     $self->evaluating_file_contents(0);
     return @result;
+}
+
+sub command_redit {
+    my ( $self ) = @_;
+
+    my $filename = $self->previously_edited_file;
+
+    if(defined $filename) {
+        return $self->command_edit(undef, $filename);
+    } else {
+        die q{You haven't used #edit yet};
+    }
 }
 
 sub dont_allow_edit_in_file {
