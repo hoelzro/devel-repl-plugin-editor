@@ -21,6 +21,9 @@ This plugin adds an C<edit> command to your REPL, invoked using C<#edit> (or
 using whatever L<Devel::REPL::Plugin::Turtles/default_command_prefix> is).
 When you run the the edit command, the REPL drops you into C<$ENV{'EDITOR'}>,
 and the code you type in that file is executed after you exit the editor.
+C<edit> accepts an optional filename as the file to edit.  If you don't
+provide one, a temporary one will be created; you can open it again with
+the C<#redit> command.
 
 =head1 SEE ALSO
 
@@ -31,6 +34,10 @@ L<Devel::REPL>
 =over
 
 =item BEFORE_PLUGIN
+
+=item command_edit
+
+=item command_redit
 
 =back
 
