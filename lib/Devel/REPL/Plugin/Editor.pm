@@ -8,43 +8,44 @@ use File::Temp ();
 
 use namespace::clean -except => 'meta';
 
+sub command_edit {
+    my ( $self, undef, $filename ) = @_;
+
+    my $tempfile;
+
+    # If filename was not provided, make one up
+    if(!defined($filename) || $filename eq '') {
+        $tempfile = File::Temp->new(SUFFIX => '.pl');
+        close $tempfile;
+        $filename = $tempfile->filename;
+    }
+
+    system $ENV{'EDITOR'}, $filename;
+
+    my $code = read_file($filename);
+    chomp $code;
+    my $pristine_code = $code;
+
+    if($self->can('current_package')) {
+        $code = "package " . $self->current_package . ";\n$code";
+    }
+
+    my $rl = $self->term;
+
+    if($rl->ReadLine eq 'Term::ReadLine::Gnu') {
+        my $location = $rl->where_history;
+        $rl->replace_history_entry($location, $pristine_code);
+    } else {
+        $self->term->addhistory($pristine_code);
+    }
+
+    return $self->formatted_eval($code);
+}
+
 sub BEFORE_PLUGIN {
     my ( $repl ) = @_;
 
     $repl->load_plugin('Turtles');
-    $repl->meta->add_method(command_edit => sub {
-        my ( $self, undef, $filename ) = @_;
-
-        my $tempfile;
-
-        # If filename was not provided, make one up
-        if(!defined($filename) || $filename eq '') {
-            $tempfile = File::Temp->new(SUFFIX => '.pl');
-            close $tempfile;
-            $filename = $tempfile->filename;
-        }
-
-        system $ENV{'EDITOR'}, $filename;
-
-        my $code = read_file($filename);
-        chomp $code;
-        my $pristine_code = $code;
-
-        if($self->can('current_package')) {
-            $code = "package " . $self->current_package . ";\n$code";
-        }
-
-        my $rl = $repl->term;
-
-        if($rl->ReadLine eq 'Term::ReadLine::Gnu') {
-            my $location = $rl->where_history;
-            $rl->replace_history_entry($location, $pristine_code);
-        } else {
-            $repl->term->addhistory($pristine_code);
-        }
-
-        return $repl->formatted_eval($code);
-    });
 }
 
 1;
