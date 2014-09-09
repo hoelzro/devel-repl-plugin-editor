@@ -78,7 +78,7 @@ sub BEFORE_PLUGIN {
 
         my $prefix = $repl->default_command_prefix;
 
-        if($repl->evaluating_file_contents && $line =~ /^${prefix}edit/) {
+        if($repl->evaluating_file_contents && $line =~ /^${prefix}(?:r?)edit/) {
             return {}; # this will be processed by Turtles' formatted_eval,
                        # which should ignore it
         }
