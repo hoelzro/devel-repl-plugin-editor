@@ -8,10 +8,8 @@ use File::Temp ();
 
 use namespace::clean -except => 'meta';
 
-my $repl;
-
 sub BEFORE_PLUGIN {
-    ( $repl ) = @_;
+    my ( $repl ) = @_;
 
     $repl->load_plugin('Turtles');
     $repl->meta->add_method(command_edit => sub {
