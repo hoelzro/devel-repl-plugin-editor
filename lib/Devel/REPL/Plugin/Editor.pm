@@ -118,6 +118,10 @@ L<Devel::REPL>
 
 =item BEFORE_PLUGIN
 
+=item command_edit
+
+=item command_redit
+
 =back
 
 =end comment
