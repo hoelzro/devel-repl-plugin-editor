@@ -69,24 +69,22 @@ sub command_redit {
     }
 }
 
-sub dont_allow_edit_in_file {
-    my ( $self, $line ) = @_;
-
-    my $prefix = $self->default_command_prefix;
-
-    if($self->evaluating_file_contents && $line =~ /^${prefix}edit/) {
-        return {}; # this will be processed by Turtles' formatted_eval, which
-                   # should ignore it
-    }
-
-    return;
-}
-
 sub BEFORE_PLUGIN {
     my ( $repl ) = @_;
 
     $repl->load_plugin('Turtles');
-    $repl->add_turtles_matcher(sub { $repl->dont_allow_edit_in_file(@_) });
+    $repl->add_turtles_matcher(sub {
+        my ( $line ) = @_;
+
+        my $prefix = $repl->default_command_prefix;
+
+        if($repl->evaluating_file_contents && $line =~ /^${prefix}edit/) {
+            return {}; # this will be processed by Turtles' formatted_eval,
+                       # which should ignore it
+        }
+
+        return;
+    });
 }
 
 1;
